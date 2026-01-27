@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Detection System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-paw"></i> Stray Animal Detection System</h1>
+            <p>Detect cats and dogs using YOLO neural network</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Column: Upload and Settings -->
+            <div class="left-column">
+                <div class="upload-section card">
+                    <h2><i class="fas fa-upload"></i> Upload Image</h2>
+                    <form id="uploadForm">
+                        <div class="file-upload">
+                            <input type="file" id="imageInput" accept="image/*" required>
+                            <label for="imageInput" class="upload-btn">
+                                <i class="fas fa-cloud-upload-alt"></i> Choose File
+                            </label>
+                            <span id="fileName">No file chosen</span>
+                        </div>
+                        
+                        <div class="settings">
+                            <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+                            <div class="slider-container">
+                                <label>Confidence Threshold: <span id="confidenceValue">0.25</span></label>
+                                <input type="range" id="confidenceSlider" min="0.01" max="0.99" step="0.01" value="0.25">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="process-btn">
+                            <i class="fas fa-play"></i> Detect Animals
+                        </button>
+                    </form>
+                </div>
+
+                <div class="stats-section card">
+                    <h2><i class="fas fa-chart-bar"></i> Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalImages">0</div>
+                            <div class="stat-label">Total Images</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalAnimals">0</div>
+                            <div class="stat-label">Total Animals</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalCats">0</div>
+                            <div class="stat-label">Cats</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalDogs">0</div>
+                            <div class="stat-label">Dogs</div>
+                        </div>
+                    </div>
+                    <button onclick="updateStats()" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh Stats
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Results -->
+            <div class="right-column">
+                <div class="results-section card">
+                    <h2><i class="fas fa-search"></i> Detection Results</h2>
+                    <div class="image-container">
+                        <div id="originalImage" class="image-placeholder">
+                            <i class="fas fa-image"></i>
+                            <p>Original Image</p>
+                        </div>
+                        <div id="resultImage" class="image-placeholder">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Detection Result</p>
+                        </div>
+                    </div>
+                    
+                    <div class="detection-info">
+                        <h3><i class="fas fa-info-circle"></i> Detection Information</h3>
+                        <div id="detectionDetails">
+                            <p>Upload an image to start detection</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History -->
+                <div class="history-section card">
+                    <div class="history-header">
+                        <h2><i class="fas fa-history"></i> Detection History</h2>
+                        <div class="history-actions">
+                            <button onclick="exportExcel()" class="export-btn">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </button>
+                            <button onclick="clearHistory()" class="clear-btn">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <p>Loading history...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
