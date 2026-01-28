@@ -208,3 +208,6 @@ __marimo__/
 
 # ignore the directory due to its large size and files
 dataset/
+
+# ignore uploaded and processes images
+backend/uploads
