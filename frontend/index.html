@@ -15,7 +15,6 @@
         </header>
 
         <div class="main-content">
-            <!-- Left Column: Upload and Settings -->
             <div class="left-column">
                 <div class="upload-section card">
                     <h2><i class="fas fa-upload"></i> Upload Image</h2>
@@ -62,24 +61,16 @@
                             <div class="stat-label">Dogs</div>
                         </div>
                     </div>
-                    <button onclick="updateStats()" class="refresh-btn">
-                        <i class="fas fa-sync-alt"></i> Refresh Stats
-                    </button>
                 </div>
             </div>
 
-            <!-- Right Column: Results -->
             <div class="right-column">
                 <div class="results-section card">
-                    <h2><i class="fas fa-search"></i> Detection Results</h2>
+                    <h2><i class="fas fa-search"></i> Image Preview</h2>
                     <div class="image-container">
                         <div id="originalImage" class="image-placeholder">
                             <i class="fas fa-image"></i>
-                            <p>Original Image</p>
-                        </div>
-                        <div id="resultImage" class="image-placeholder">
-                            <i class="fas fa-check-circle"></i>
-                            <p>Detection Result</p>
+                            <p>Uploaded Image</p>
                         </div>
                     </div>
                     
@@ -91,13 +82,12 @@
                     </div>
                 </div>
 
-                <!-- History -->
                 <div class="history-section card">
                     <div class="history-header">
                         <h2><i class="fas fa-history"></i> Detection History</h2>
                         <div class="history-actions">
-                            <button onclick="exportExcel()" class="export-btn">
-                                <i class="fas fa-file-excel"></i> Export Excel
+                            <button onclick="exportFullPDF()" class="export-btn">
+                                <i class="fas fa-file-pdf"></i> Full PDF
                             </button>
                             <button onclick="clearHistory()" class="clear-btn">
                                 <i class="fas fa-trash"></i> Clear All
