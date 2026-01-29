@@ -89,13 +89,14 @@ class PDFGenerator:
         if history_entries:
             elements.append(Paragraph("Detailed Detection History", self.heading_style))
             
-            history_data = [["ID", "Filename", "Date", "Animals", "Cats", "Dogs", "Time(s)", "Confidence"]]
+            history_data = [["ID", "Filename", "Model", "Date", "Animals", "Cats", "Dogs", "Time(s)", "Confidence"]]
             
             for entry in history_entries:
                 date_str = entry.upload_time.strftime('%Y-%m-%d %H:%M') if entry.upload_time else "N/A"
                 history_data.append([
                     str(entry.id),
-                    entry.filename[:30] + "..." if len(entry.filename) > 30 else entry.filename,
+                    entry.filename[:25] + "..." if len(entry.filename) > 25 else entry.filename,
+                    entry.model_name[:15] + "..." if len(entry.model_name) > 15 else entry.model_name,
                     date_str,
                     str(entry.total_animals),
                     str(entry.cats_count),
@@ -104,20 +105,20 @@ class PDFGenerator:
                     f"{entry.confidence:.2f}"
                 ])
             
-            history_table = Table(history_data, colWidths=[0.5*inch, 2*inch, 1.2*inch, 0.7*inch, 0.7*inch, 0.7*inch, 0.8*inch, 0.8*inch])
+            history_table = Table(history_data, colWidths=[0.5*inch, 1.8*inch, 1.2*inch, 1.2*inch, 0.7*inch, 0.7*inch, 0.7*inch, 0.8*inch, 0.8*inch])
             history_table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#764ba2')),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
                 ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 10),
+                ('FONTSIZE', (0, 0), (-1, 0), 9),
                 ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
                 ('BACKGROUND', (0, 1), (-1, -1), colors.white),
                 ('GRID', (0, 0), (-1, -1), 1, colors.grey),
                 ('FONTSIZE', (0, 1), (-1, -1), 8),
                 ('TOPPADDING', (0, 1), (-1, -1), 6),
                 ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
-                ('ALIGN', (3, 1), (5, -1), 'CENTER'),
+                ('ALIGN', (4, 1), (6, -1), 'CENTER'),
             ]))
             
             elements.append(history_table)
@@ -144,6 +145,7 @@ class PDFGenerator:
         info_data = [
             ["Field", "Value"],
             ["Filename", entry.filename],
+            ["Model Used", entry.model_name],
             ["Upload Time", entry.upload_time.strftime('%Y-%m-%d %H:%M:%S') if entry.upload_time else "N/A"],
             ["Processing Time", f"{entry.processing_time:.2f} seconds"],
             ["Confidence Threshold", f"{entry.confidence:.2f}"],

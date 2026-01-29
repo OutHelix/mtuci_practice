@@ -4,7 +4,7 @@ import os
 import time
 from datetime import datetime
 
-from config import Config, UPLOAD_FOLDER, RESULTS_FOLDER, MODEL_PATH
+from config import Config, UPLOAD_FOLDER, RESULTS_FOLDER, MODELS_FOLDER
 from detection_logic import AnimalDetector
 from database import db, DetectionHistory, init_db
 from pdf_generator import PDFGenerator
@@ -15,8 +15,16 @@ app.config.from_object(Config)
 CORS(app)
 
 init_db(app)
-detector = AnimalDetector(MODEL_PATH)
+detector = None
 pdf_generator = PDFGenerator()
+
+def get_available_models():
+    models = []
+    if os.path.exists(MODELS_FOLDER):
+        for file in os.listdir(MODELS_FOLDER):
+            if file.endswith(('.pt', '.pth', '.onnx')):
+                models.append(file)
+    return sorted(models)
 
 @app.route('/uploads/<path:filename>')
 def serve_upload(filename):
@@ -29,6 +37,18 @@ def serve_result(filename):
 @app.route('/')
 def index():
     return jsonify({"message": "Animal Detection API is running"})
+
+@app.route('/api/models', methods=['GET'])
+def get_models():
+    try:
+        models = get_available_models()
+        return jsonify({
+            'success': True,
+            'models': models,
+            'count': len(models)
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/upload', methods=['POST'])
 def upload_image():
@@ -56,6 +76,16 @@ def upload_image():
         file.save(original_path)
         
         confidence = float(request.form.get('confidence', 0.25))
+        model_name = request.form.get('model', '')
+        
+        if not model_name:
+            return jsonify({'error': 'No model selected'}), 400
+        
+        model_path = os.path.join(MODELS_FOLDER, model_name)
+        if not os.path.exists(model_path):
+            return jsonify({'error': f'Model not found: {model_name}'}), 400
+        
+        detector = AnimalDetector(model_path)
         
         start_time = time.time()
         result = detector.detect_on_image(
@@ -79,6 +109,7 @@ def upload_image():
             cats_count=result['stats']['cats'],
             dogs_count=result['stats']['dogs'],
             confidence=confidence,
+            model_name=model_name,
             detections_json=detections_json
         )
         
@@ -93,6 +124,7 @@ def upload_image():
             'detections': result['detections'],
             'stats': result['stats'],
             'confidence': confidence,
+            'model_name': model_name,
             'history_id': history_entry.id
         }
         

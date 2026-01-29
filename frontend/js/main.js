@@ -4,6 +4,8 @@ const imageInput = document.getElementById('imageInput');
 const fileName = document.getElementById('fileName');
 const confidenceSlider = document.getElementById('confidenceSlider');
 const confidenceValue = document.getElementById('confidenceValue');
+const modelSelect = document.getElementById('modelSelect');
+const modelInfo = document.getElementById('modelInfo');
 const uploadForm = document.getElementById('uploadForm');
 const originalImage = document.getElementById('originalImage');
 const detectionDetails = document.getElementById('detectionDetails');
@@ -60,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    loadAvailableModels();
     updateStats();
     loadHistory();
 });
@@ -68,6 +71,39 @@ function resetFileInput() {
     imageInput.value = '';
     fileName.textContent = 'No file chosen';
     originalImage.innerHTML = '<i class="fas fa-image"></i><p>Uploaded Image</p>';
+}
+
+async function loadAvailableModels() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/models`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const data = await response.json();
+        
+        if (data.success && data.models.length > 0) {
+            modelSelect.innerHTML = '';
+            
+            data.models.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model;
+                option.textContent = model;
+                modelSelect.appendChild(option);
+            });
+            
+            modelInfo.textContent = `Found ${data.models.length} model(s) available`;
+            
+            if (data.models.includes('best.pt')) {
+                modelSelect.value = 'best.pt';
+            }
+        } else {
+            modelSelect.innerHTML = '<option value="">No models found</option>';
+            modelInfo.textContent = 'No model files found in models folder. Please add .pt files.';
+        }
+    } catch (error) {
+        console.error('Error loading models:', error);
+        modelSelect.innerHTML = '<option value="">Error loading models</option>';
+        modelInfo.textContent = 'Error loading models. Check server connection.';
+    }
 }
 
 async function testServerConnection() {
@@ -84,9 +120,15 @@ async function testServerConnection() {
 async function processImage() {
     const file = imageInput.files[0];
     const confidence = confidenceSlider.value;
+    const model = modelSelect.value;
     
     if (!file) {
         alert('Please select an image file');
+        return;
+    }
+    
+    if (!model) {
+        alert('Please select a model');
         return;
     }
     
@@ -99,6 +141,7 @@ async function processImage() {
         const formData = new FormData();
         formData.append('image', file);
         formData.append('confidence', confidence);
+        formData.append('model', model);
         
         const response = await fetch(`${API_BASE_URL}/upload`, {
             method: 'POST',
@@ -140,6 +183,10 @@ function showDetectionInfo(data) {
     let html = `
         <div class="info-grid">
             <div class="info-item">
+                <label>Model Used:</label>
+                <span>${data.model_name}</span>
+            </div>
+            <div class="info-item">
                 <label>Processing Time:</label>
                 <span>${data.processing_time} seconds</span>
             </div>
@@ -180,7 +227,7 @@ function showDetectionInfo(data) {
             <div class="no-detections">
                 <i class="fas fa-search"></i>
                 <p>No animals detected</p>
-                <p class="hint">Try lowering the confidence threshold</p>
+                <p class="hint">Try lowering the confidence threshold or using a different model</p>
             </div>
         `;
     }
@@ -248,6 +295,7 @@ async function loadHistory() {
                             </div>
                             <div class="history-info">
                                 <h4>${item.filename}</h4>
+                                <div class="model-badge">${item.model_name}</div>
                                 <p><i class="far fa-calendar"></i> ${formattedDate}</p>
                                 <div class="history-stats">
                                     <span class="stat-badge total">${item.total_animals} animals</span>
@@ -309,6 +357,10 @@ async function showHistoryDetails(historyId) {
                     <div class="modal-stat-item">
                         <span class="modal-stat-label">File Name</span>
                         <span class="modal-stat-value">${item.filename}</span>
+                    </div>
+                    <div class="modal-stat-item">
+                        <span class="modal-stat-label">Model Used</span>
+                        <span class="modal-stat-value">${item.model_name}</span>
                     </div>
                     <div class="modal-stat-item">
                         <span class="modal-stat-label">Upload Time</span>

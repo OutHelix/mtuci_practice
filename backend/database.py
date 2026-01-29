@@ -16,6 +16,7 @@ class DetectionHistory(db.Model):
     cats_count = db.Column(db.Integer, default=0)
     dogs_count = db.Column(db.Integer, default=0)
     confidence = db.Column(db.Float, default=0.25)
+    model_name = db.Column(db.String(100), default='')
     detections_json = db.Column(db.Text, default='[]')
     
     def to_dict(self):
@@ -29,6 +30,7 @@ class DetectionHistory(db.Model):
             'cats_count': self.cats_count,
             'dogs_count': self.dogs_count,
             'confidence': self.confidence,
+            'model_name': self.model_name,
             'detections': json.loads(self.detections_json) if self.detections_json else []
         }
 
