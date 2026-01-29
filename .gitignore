@@ -211,3 +211,6 @@ dataset/
 
 # ignore uploaded and processes images
 backend/uploads
+
+# ignoring database
+backend/detections.db
