@@ -12,6 +12,12 @@ A web application for detecting cats and dogs in images using YOLO neural networ
 - Statistics dashboard
 - Responsive design
 
+Important Note on Model Files
+
+Due to the large size of the YOLO model files, only the yolo26m.pt model is included in the repository.
+All other model variants (yolo11n.pt, yolo_dog_cat_l4.pt, yolo26m.pt, last.pt) have been uploaded to cloud storage.
+You can download additional models from [this link](https://drive.google.com/drive/folders/11MI-XGXEAJA5z-v0D9C5inCar-v8uZSo?usp=drive_link).
+
 ## Project Structure
 
 ```
@@ -24,7 +30,7 @@ animal_detection_app/
 │   ├── pdf_generator.py    # PDF report generation
 │   ├── requirements.txt    # Python dependencies
 │   ├── models/
-│   │   └── yolo11n.pt     # YOLO model file (already included)
+│   │   └── yolo26m.pt          # YOLO model file (only this model included)
 │   └── uploads/           # Uploaded images
 ├── frontend/
 │   ├── index.html         # Main HTML file
@@ -238,7 +244,7 @@ python app.py
 
 - **Backend**: Flask REST API with SQLite database
 - **Frontend**: Vanilla HTML/CSS/JS with no frameworks
-- **Model**: YOLOv8 (yolo11n.pt) for object detection
+- **Model**: yolo26m, yolo_dog_cat_l4, yolo11n for object detection
 - **Database**: SQLite for storing detection history
 
 ### Adding New Features
