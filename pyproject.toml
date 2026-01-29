@@ -1,5 +1,5 @@
 [project]
 name = "animal-detection-system"
-version = "0.0.1"
+version = "0.0.2"
 description = "Web application for detecting animals in images"
 authors = [{name = "Evgeniy Serov", email = "outhelix@gmail.com"}]
