@@ -179,6 +179,15 @@ button {
     color: white;
 }
 
+.export-excel-btn {
+    background: #217346;
+    color: white;
+}
+
+.export-excel-btn:hover {
+    background: #1a5c38;
+}
+
 .clear-btn {
     background: #f56565;
     color: white;
@@ -399,6 +408,25 @@ button {
     background: #c53030;
 }
 
+.excel-report-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: #217346;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.8em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.3s;
+}
+
+.excel-report-btn:hover {
+    background: #1a5c38;
+}
+
 .detection-details-modal {
     position: fixed;
     top: 0;
@@ -558,6 +586,7 @@ button {
     margin-top: 25px;
     display: flex;
     justify-content: center;
+    gap: 10px;
 }
 
 .modal-pdf-btn {
@@ -574,6 +603,22 @@ button {
 
 .modal-pdf-btn:hover {
     background: #c53030;
+}
+
+.modal-excel-btn {
+    background: #217346;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1em;
+    transition: background 0.3s;
+}
+
+.modal-excel-btn:hover {
+    background: #1a5c38;
 }
 
 .empty-history {
@@ -776,5 +821,14 @@ button {
     
     .modal-detection-confidence {
         margin-left: 0;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .history-actions {
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }

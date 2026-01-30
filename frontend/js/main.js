@@ -304,9 +304,14 @@ async function loadHistory() {
                                 </div>
                                 <p><i class="far fa-clock"></i> Processing time: ${item.processing_time}s</p>
                                 <p><i class="fas fa-filter"></i> Confidence: ${item.confidence}</p>
-                                <button class="pdf-report-btn" onclick="event.stopPropagation(); exportSinglePDF(${item.id})">
-                                    <i class="fas fa-file-pdf"></i> Get PDF Report
-                                </button>
+                                <div class="report-buttons">
+                                    <button class="pdf-report-btn" onclick="event.stopPropagation(); exportSinglePDF(${item.id})">
+                                        <i class="fas fa-file-pdf"></i> PDF
+                                    </button>
+                                    <button class="excel-report-btn" onclick="event.stopPropagation(); exportSingleExcel(${item.id})">
+                                        <i class="fas fa-file-excel"></i> Excel
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -421,6 +426,9 @@ async function showHistoryDetails(historyId) {
                 <button class="modal-pdf-btn" onclick="exportSinglePDF(${item.id})">
                     <i class="fas fa-file-pdf"></i> Download PDF Report
                 </button>
+                <button class="modal-excel-btn" onclick="exportSingleExcel(${item.id})">
+                    <i class="fas fa-file-excel"></i> Download Excel Report
+                </button>
             </div>
         `;
         
@@ -456,8 +464,16 @@ function exportFullPDF() {
     window.open(`${API_BASE_URL}/export/pdf`, '_blank');
 }
 
+function exportFullExcel() {
+    window.open(`${API_BASE_URL}/export/excel`, '_blank');
+}
+
 function exportSinglePDF(id) {
     window.open(`${API_BASE_URL}/export/pdf/${id}`, '_blank');
+}
+
+function exportSingleExcel(id) {
+    window.open(`${API_BASE_URL}/export/excel/${id}`, '_blank');
 }
 
 async function clearHistory() {
@@ -572,6 +588,21 @@ const notificationStyles = `
             transform: translateX(0);
             opacity: 1;
         }
+    }
+    
+    .report-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .history-info .pdf-report-btn,
+    .history-info .excel-report-btn {
+        flex: 1;
+        min-width: 70px;
+        justify-content: center;
+        margin-top: 5px;
     }
 `;
 

@@ -8,6 +8,7 @@ from config import Config, UPLOAD_FOLDER, RESULTS_FOLDER, MODELS_FOLDER
 from detection_logic import AnimalDetector
 from database import db, DetectionHistory, init_db
 from pdf_generator import PDFGenerator
+from excel_generator import ExcelGenerator
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,6 +18,7 @@ CORS(app)
 init_db(app)
 detector = None
 pdf_generator = PDFGenerator()
+excel_generator = ExcelGenerator()
 
 def get_available_models():
     models = []
@@ -197,6 +199,36 @@ def export_pdf_single(id):
             mimetype='application/pdf',
             as_attachment=True,
             download_name=f'detection_report_{entry.id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf'
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/export/excel', methods=['GET'])
+def export_excel():
+    try:
+        history = DetectionHistory.query.all()
+        excel_buffer = excel_generator.generate_full_report(history)
+        
+        return send_file(
+            excel_buffer,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name=f'animal_detection_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx'
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/export/excel/<int:id>', methods=['GET'])
+def export_excel_single(id):
+    try:
+        entry = DetectionHistory.query.get_or_404(id)
+        excel_buffer = excel_generator.generate_single_report(entry)
+        
+        return send_file(
+            excel_buffer,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name=f'detection_report_{entry.id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.xlsx'
         )
     except Exception as e:
         return jsonify({'error': str(e)}), 500
